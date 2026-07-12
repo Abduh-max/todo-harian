@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>To-Do List Harian</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4A90D9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fa;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .app-container {
+            max-width: 480px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            padding: 24px 20px 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+
+        .tanggal-badge {
+            background: #eef2f7;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            color: #4a5a72;
+            font-weight: 500;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eef2f7;
+            padding-bottom: 12px;
+        }
+
+        .stats {
+            font-size: 14px;
+            color: #6b7a8f;
+        }
+
+        .stats span {
+            font-weight: 700;
+            color: #1a2332;
+        }
+
+        .btn-hapus-selesai {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-hapus-selesai:hover {
+            background: #fde8e8;
+        }
+        .btn-hapus-selesai:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* FORM TAMBAH TASK */
+        .form-tambah {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .form-tambah input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e0e6ed;
+            border-radius: 16px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #fafbfc;
+        }
+
+        .form-tambah input:focus {
+            border-color: #4A90D9;
+            background: white;
+        }
+
+        .form-tambah button {
+            padding: 14px 22px;
+            background: #4A90D9;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .form-tambah button:active {
+            transform: scale(0.95);
+        }
+
+        .form-tambah button:hover {
+            background: #3a7bc8;
+        }
+
+        /* DAFTAR TASK */
+        .daftar-task {
+            list-style: none;
+            padding: 0;
+        }
+
+        .daftar-task li {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            background: #fafbfc;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            gap: 12px;
+            transition: background 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .daftar-task li:hover {
+            background: #f0f4fa;
+            border-color: #e0e6ed;
+        }
+
+        .daftar-task li .checkbox-custom {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            border-radius: 50%;
+            border: 2px solid #c5cdd8;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .daftar-task li .checkbox-custom.selesai {
+            background: #4A90D9;
+            border-color: #4A90D9;
+        }
+
+        .daftar-task li .checkbox-custom.selesai::after {
+            content: "✓";
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .daftar-task li .task-text {
+            flex: 1;
+            font-size: 16px;
+            color: #1a2332;
+            word-break: break-word;
+        }
+
+        .daftar-task li .task-text.selesai {
+            text-decoration: line-through;
+            color: #8a9aaa;
+        }
+
+        .daftar-task li .btn-hapus {
+            background: none;
+            border: none;
+            color: #bcc6d2;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+
+        .daftar-task li .btn-hapus:hover {
+            color: #e74c3c;
+            background: #fde8e8;
+        }
+
+        /* PESAN KOSONG */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px 30px;
+            color: #8a9aaa;
+        }
+
+        .empty-state .icon-empty {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+
+        /* PWA INSTALL BANNER */
+        .install-banner {
+            margin-top: 20px;
+            padding: 12px 16px;
+            background: #eef4ff;
+            border-radius: 16px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #d0def0;
+        }
+
+        .install-banner.show {
+            display: flex;
+        }
+
+        .install-banner p {
+            font-size: 14px;
+            color: #1a2332;
+            font-weight: 500;
+        }
+
+        .install-banner button {
+            background: #4A90D9;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .install-banner button:active {
+            transform: scale(0.95);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 400px) {
+            .app-container {
+                padding: 16px 14px 20px;
+            }
+            .header h1 {
+                font-size: 20px;
+            }
+            .form-tambah input {
+                font-size: 14px;
+                padding: 12px 14px;
+            }
+            .form-tambah button {
+                font-size: 14px;
+                padding: 12px 16px;
+            }
+            .daftar-task li {
+                padding: 12px 12px;
+                font-size: 14px;
+            }
+        }
+
+        /* ANIMASI */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .daftar-task li {
+            animation: slideIn 0.25s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container" role="main">
+    <!-- HEADER -->
+    <div class="header">
+        <h1>📋 Hari Ini</h1>
+        <div class="tanggal-badge" id="tanggalDisplay"></div>
+    </div>
+
+    <div class="sub-header">
+        <div class="stats">
+            <span id="totalTask">0</span> tugas · <span id="selesaiTask">0</span> selesai
+        </div>
+        <button class="btn-hapus-selesai" id="hapusSelesaiBtn" disabled>Hapus selesai</button>
+    </div>
+
+    <!-- FORM TAMBAH -->
+    <form class="form-tambah" id="formTambah" autocomplete="off">
+        <input type="text" id="inputTask" placeholder="Tulis tugas baru..." required aria-label="Tugas baru">
+        <button type="submit">Tambah</button>
+    </form>
+
+    <!-- DAFTAR TASK -->
+    <ul class="daftar-task" id="daftarTask" role="list">
+        <!-- Task akan di-render oleh JS -->
+    </ul>
+
+    <!-- EMPTY STATE (akan ditampilkan jika tidak ada task) -->
+    <div class="empty-state" id="emptyState" style="display:none;">
+        <div class="icon-empty">🎯</div>
+        <p>Belum ada tugas hari ini.<br>Mulai tambahkan tugasmu!</p>
+    </div>
+
+    <!-- INSTALL BANNER (PWA) -->
+    <div class="install-banner" id="installBanner">
+        <p>📲 Install aplikasi ini</p>
+        <button id="installBtn">Install</button>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    //  DATA & STATE
+    // ============================================================
+    let tasks = [];
+    let deferredPrompt = null; // untuk PWA install
+
+    const STORAGE_KEY = 'daily_tasks_list';
+
+    // DOM refs
+    const formTambah = document.getElementById('formTambah');
+    const inputTask = document.getElementById('inputTask');
+    const daftarTask = document.getElementById('daftarTask');
+    const emptyState = document.getElementById('emptyState');
+    const totalTaskSpan = document.getElementById('totalTask');
+    const selesaiTaskSpan = document.getElementById('selesaiTask');
+    const hapusSelesaiBtn = document.getElementById('hapusSelesaiBtn');
+    const tanggalDisplay = document.getElementById('tanggalDisplay');
+    const installBanner = document.getElementById('installBanner');
+    const installBtn = document.getElementById('installBtn');
+
+    // ============================================================
+    //  FUNGSI BANTU
+    // ============================================================
+    function formatTanggal() {
+        const now = new Date();
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        const dayName = days[now.getDay()];
+        const date = now.getDate();
+        const month = months[now.getMonth()];
+        const year = now.getFullYear();
+        return `${dayName}, ${date} ${month} ${year}`;
+    }
+
+    // Simpan ke localStorage
+    function simpanTasks() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        } catch (e) {
+            console.warn('Gagal simpan ke localStorage:', e);
+        }
+    }
+
+    // Ambil dari localStorage
+    function muatTasks() {
+        try {
+            const data = localStorage.getItem(STORAGE_KEY);
+            if (data) {
+                tasks = JSON.parse(data);
+                // validasi: pastikan array
+                if (!Array.isArray(tasks)) tasks = [];
+                return true;
+            }
+        } catch (e) {
+            console.warn('Gagal muat dari localStorage:', e);
+        }
+        return false;
+    }
+
+    // ============================================================
+    //  RENDER TASK
+    // ============================================================
+    function renderTasks() {
+        // Urutkan: yang belum selesai di atas, lalu yang selesai di bawah
+        const sorted = [...tasks].sort((a, b) => {
+            if (a.done === b.done) return 0;
+            return a.done ? 1 : -1;
+        });
+
+        // Kosongkan list
+        daftarTask.innerHTML = '';
+
+        if (sorted.length === 0) {
+            emptyState.style.display = 'block';
+        } else {
+            emptyState.style.display = 'none';
+        }
+
+        // Loop buat elemen
+        sorted.forEach((task, index) => {
+            // cari index asli di tasks (untuk update)
+            const originalIndex = tasks.indexOf(task);
+
+            const li = document.createElement('li');
+            li.setAttribute('role', 'listitem');
+
+            // checkbox
+            const checkbox = document.createElement('span');
+            checkbox.className = `checkbox-custom ${task.done ? 'selesai' : ''}`;
+            checkbox.setAttribute('role', 'checkbox');
+            checkbox.setAttribute('aria-checked', task.done ? 'true' : 'false');
+            checkbox.setAttribute('tabindex', '0');
+            checkbox.addEventListener('click', () => toggleTask(originalIndex));
+            // aksesibilitas keyboard
+            checkbox.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleTask(originalIndex);
+                }
+            });
+
+            // teks
+            const textSpan = document.createElement('span');
+            textSpan.className = `task-text ${task.done ? 'selesai' : ''}`;
+            textSpan.textContent = task.text;
+
+            // tombol hapus
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'btn-hapus';
+            deleteBtn.setAttribute('aria-label', 'Hapus tugas');
+            deleteBtn.textContent = '✕';
+            deleteBtn.addEventListener('click', () => hapusTask(originalIndex));
+
+            li.appendChild(checkbox);
+            li.appendChild(textSpan);
+            li.appendChild(deleteBtn);
+            daftarTask.appendChild(li);
+        });
+
+        // Update statistik
+        const total = tasks.length;
+        const selesai = tasks.filter(t => t.done).length;
+        totalTaskSpan.textContent = total;
+        selesaiTaskSpan.textContent = selesai;
+
+        // Enable/disable tombol hapus selesai
+        hapusSelesaiBtn.disabled = (selesai === 0);
+
+        // Simpan
+        simpanTasks();
+    }
+
+    // ============================================================
+    //  CRUD OPERASI
+    // ============================================================
+    function tambahTask(text) {
+        const trimmed = text.trim();
+        if (trimmed === '') return false;
+        tasks.push({
+            id: Date.now() + Math.random().toString(36).substr(2, 4),
+            text: trimmed,
+            done: false,
+            createdAt: new Date().toISOString()
+        });
+        renderTasks();
+        return true;
+    }
+
+    function toggleTask(index) {
+        if (index < 0 || index >= tasks.length) return;
+        tasks[index].done = !tasks[index].done;
+        renderTasks();
+    }
+
+    function hapusTask(index) {
+        if (index < 0 || index >= tasks.length) return;
+        if (confirm(`Hapus tugas "${tasks[index].text}"?`)) {
+            tasks.splice(index, 1);
+            renderTasks();
+        }
+    }
+
+    function hapusSemuaSelesai() {
+        const selesai = tasks.filter(t => t.done);
+        if (selesai.length === 0) return;
+        if (confirm(`Hapus ${selesai.length} tugas yang sudah selesai?`)) {
+            tasks = tasks.filter(t => !t.done);
+            renderTasks();
+        }
+    }
+
+    // ============================================================
+    //  EVENT LISTENERS
+    // ============================================================
+    formTambah.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const text = inputTask.value;
+        const berhasil = tambahTask(text);
+        if (berhasil) {
+            inputTask.value = '';
+            inputTask.focus();
+        }
+    });
+
+    // Hapus semua selesai
+    hapusSelesaiBtn.addEventListener('click', hapusSemuaSelesai);
+
+    // ============================================================
+    //  PWA INSTALL
+    // ============================================================
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBanner.classList.add('show');
+    });
+
+    installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            const result = await deferredPrompt.prompt();
+            console.log('Install result:', result.outcome);
+            deferredPrompt = null;
+            installBanner.classList.remove('show');
+        }
+    });
+
+    // Sembunyikan banner jika sudah terinstall
+    window.addEventListener('appinstalled', () => {
+        installBanner.classList.remove('show');
+        deferredPrompt = null;
+    });
+
+    // ============================================================
+    //  INIT
+    // ============================================================
+    // Set tanggal
+    tanggalDisplay.textContent = formatTanggal();
+
+    // Muat data
+    const loaded = muatTasks();
+    if (!loaded) {
+        // Data default jika belum ada
+        tasks = [
+            { id: '1', text: 'Coba aplikasi ini', done: false, createdAt: new Date().toISOString() },
+            { id: '2', text: 'Tambahkan tugas harianmu', done: false, createdAt: new Date().toISOString() },
+        ];
+    }
+    renderTasks();
+
+    // Fokus ke input
+    inputTask.focus();
+
+    // Service Worker registrasi
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(() => console.log('SW registered'))
+            .catch(err => console.log('SW registration failed:', err));
+    }
+
+    console.log('✅ To-Do List Harian siap!');
+</script>
+
+</body>
+</html>
