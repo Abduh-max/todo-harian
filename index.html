@@ -10,939 +10,139 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="icon-192.png">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-        }
-
-        body {
-            background: #f5f7fa;
-            padding: 16px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        .app-container {
-            max-width: 480px;
-            width: 100%;
-            background: white;
-            border-radius: 24px;
-            padding: 20px 16px 30px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-        }
-
-        /* HEADER */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .header h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1a2332;
-        }
-
-        .btn-today {
-            background: #4A90D9;
-            color: white;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-today:active {
-            transform: scale(0.95);
-        }
-
-        /* NAVIGASI TANGGAL */
-        .date-navigation {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f0f4fa;
-            border-radius: 16px;
-            padding: 8px 12px;
-            margin-bottom: 16px;
-        }
-
-        .date-nav-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            padding: 8px 12px;
-            cursor: pointer;
-            color: #4a5a72;
-            border-radius: 12px;
-            transition: background 0.2s;
-        }
-
-        .date-nav-btn:active {
-            background: #dce3ed;
-        }
-
-        .date-display {
-            font-weight: 600;
-            font-size: 16px;
-            color: #1a2332;
-            text-align: center;
-            flex: 1;
-        }
-
-        .date-display .day-name {
-            font-weight: 400;
-            color: #6b7a8f;
-            font-size: 14px;
-        }
-
-        /* INDICATOR TANGGAL ADA TUGAS */
-        .has-tasks-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #4A90D9;
-            border-radius: 50%;
-            margin-left: 6px;
-            vertical-align: middle;
-        }
-
-        .has-tasks-indicator.empty {
-            background: #dce3ed;
-        }
-
-        /* FORM TAMBAH TASK */
-        .form-tambah {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .form-tambah input {
-            flex: 1;
-            padding: 14px 18px;
-            border: 2px solid #e0e6ed;
-            border-radius: 16px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s;
-            background: #fafbfc;
-        }
-
-        .form-tambah input:focus {
-            border-color: #4A90D9;
-            background: white;
-        }
-
-        .form-tambah button {
-            padding: 14px 22px;
-            background: #4A90D9;
-            color: white;
-            border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            white-space: nowrap;
-        }
-
-        .form-tambah button:active {
-            transform: scale(0.95);
-        }
-
-        .form-tambah button:hover {
-            background: #3a7bc8;
-        }
-
-        /* STATS */
-        .sub-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #eef2f7;
-        }
-
-        .stats {
-            font-size: 14px;
-            color: #6b7a8f;
-        }
-
-        .stats span {
-            font-weight: 700;
-            color: #1a2332;
-        }
-
-        .btn-hapus-selesai {
-            background: none;
-            border: none;
-            color: #e74c3c;
-            font-size: 13px;
-            font-weight: 500;
-            padding: 4px 12px;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-hapus-selesai:hover {
-            background: #fde8e8;
-        }
-
-        .btn-hapus-selesai:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        /* DAFTAR TASK */
-        .daftar-task {
-            list-style: none;
-            padding: 0;
-            min-height: 100px;
-        }
-
-        .daftar-task li {
-            display: flex;
-            align-items: center;
-            padding: 14px 16px;
-            background: #fafbfc;
-            border-radius: 16px;
-            margin-bottom: 8px;
-            gap: 12px;
-            transition: background 0.2s;
-            border: 1px solid transparent;
-            animation: slideIn 0.25s ease-out;
-        }
-
-        .daftar-task li:hover {
-            background: #f0f4fa;
-            border-color: #e0e6ed;
-        }
-
-        .daftar-task li .checkbox-custom {
-            width: 24px;
-            height: 24px;
-            min-width: 24px;
-            border-radius: 50%;
-            border: 2px solid #c5cdd8;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: white;
-        }
-
-        .daftar-task li .checkbox-custom.selesai {
-            background: #4A90D9;
-            border-color: #4A90D9;
-        }
-
-        .daftar-task li .checkbox-custom.selesai::after {
-            content: "✓";
-            color: white;
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .daftar-task li .task-text {
-            flex: 1;
-            font-size: 16px;
-            color: #1a2332;
-            word-break: break-word;
-        }
-
-        .daftar-task li .task-text.selesai {
-            text-decoration: line-through;
-            color: #8a9aaa;
-        }
-
-        .daftar-task li .btn-hapus {
-            background: none;
-            border: none;
-            color: #bcc6d2;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 8px;
-            transition: all 0.2s;
-            line-height: 1;
-        }
-
-        .daftar-task li .btn-hapus:hover {
-            color: #e74c3c;
-            background: #fde8e8;
-        }
-
-        /* EMPTY STATE */
-        .empty-state {
-            text-align: center;
-            padding: 30px 20px;
-            color: #8a9aaa;
-        }
-
-        .empty-state .icon-empty {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
-
-        .empty-state p {
-            font-size: 14px;
-        }
-
-        /* KALENDER MINI */
-        .calendar-section {
-            margin-top: 24px;
-            padding-top: 20px;
-            border-top: 2px solid #eef2f7;
-        }
-
-        .calendar-section h3 {
-            font-size: 16px;
-            color: #1a2332;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-        }
-
-        .calendar-grid .day-header {
-            text-align: center;
-            font-size: 11px;
-            font-weight: 600;
-            color: #8a9aaa;
-            padding: 6px 0;
-        }
-
-        .calendar-grid .day-cell {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1a2332;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-            background: transparent;
-            border: none;
-            width: 100%;
-            padding: 0;
-        }
-
-        .calendar-grid .day-cell:active {
-            transform: scale(0.9);
-        }
-
-        .calendar-grid .day-cell.other-month {
-            color: #c5cdd8;
-        }
-
-        .calendar-grid .day-cell.today {
-            background: #4A90D9;
-            color: white;
-            font-weight: 700;
-        }
-
-        .calendar-grid .day-cell.selected {
-            background: #dce3ed;
-            font-weight: 700;
-        }
-
-        .calendar-grid .day-cell.has-tasks::after {
-            content: '';
-            position: absolute;
-            bottom: 4px;
-            width: 5px;
-            height: 5px;
-            background: #4A90D9;
-            border-radius: 50%;
-        }
-
-        .calendar-grid .day-cell.today.has-tasks::after {
-            background: white;
-        }
-
-        .calendar-grid .day-cell.selected.has-tasks::after {
-            background: #4A90D9;
-        }
-
-        .calendar-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .calendar-nav button {
-            background: none;
-            border: none;
-            font-size: 18px;
-            padding: 4px 12px;
-            cursor: pointer;
-            color: #4a5a72;
-            border-radius: 8px;
-        }
-
-        .calendar-nav button:active {
-            background: #eef2f7;
-        }
-
-        .calendar-nav .month-label {
-            font-weight: 600;
-            font-size: 15px;
-            color: #1a2332;
-        }
-
-        /* PWA INSTALL BANNER */
-        .install-banner {
-            margin-top: 20px;
-            padding: 12px 16px;
-            background: #eef4ff;
-            border-radius: 16px;
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            border: 1px solid #d0def0;
-        }
-
-        .install-banner.show {
-            display: flex;
-        }
-
-        .install-banner p {
-            font-size: 14px;
-            color: #1a2332;
-            font-weight: 500;
-        }
-
-        .install-banner button {
-            background: #4A90D9;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .install-banner button:active {
-            transform: scale(0.95);
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 400px) {
-            .app-container {
-                padding: 16px 12px 20px;
-            }
-            .header h1 {
-                font-size: 20px;
-            }
-            .form-tambah input {
-                font-size: 14px;
-                padding: 12px 14px;
-            }
-            .form-tambah button {
-                font-size: 14px;
-                padding: 12px 16px;
-            }
-            .calendar-grid .day-cell {
-                font-size: 12px;
-            }
-        }
+        *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif}
+        body{background:#f5f7fa;padding:16px;min-height:100vh;display:flex;justify-content:center;align-items:flex-start}
+        .app-container{max-width:480px;width:100%;background:white;border-radius:24px;padding:20px 16px 30px;box-shadow:0 8px 30px rgba(0,0,0,0.08)}
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+        .header h1{font-size:22px;font-weight:700;color:#1a2332}
+        .btn-today{background:#4A90D9;color:white;border:none;padding:6px 16px;border-radius:30px;font-size:13px;font-weight:600;cursor:pointer}
+        .btn-today:active{transform:scale(0.95)}
+        .date-navigation{display:flex;align-items:center;justify-content:space-between;background:#f0f4fa;border-radius:16px;padding:8px 12px;margin-bottom:16px}
+        .date-nav-btn{background:none;border:none;font-size:20px;padding:8px 12px;cursor:pointer;color:#4a5a72;border-radius:12px}
+        .date-nav-btn:active{background:#dce3ed}
+        .date-display{font-weight:600;font-size:16px;color:#1a2332;text-align:center;flex:1}
+        .date-display .day-name{font-weight:400;color:#6b7a8f;font-size:14px}
+        .has-tasks-indicator{display:inline-block;width:8px;height:8px;background:#4A90D9;border-radius:50%;margin-left:6px;vertical-align:middle}
+        .has-tasks-indicator.empty{background:#dce3ed}
+        .form-tambah{display:flex;gap:10px;margin-bottom:20px}
+        .form-tambah input{flex:1;padding:14px 18px;border:2px solid #e0e6ed;border-radius:16px;font-size:16px;outline:none;background:#fafbfc}
+        .form-tambah input:focus{border-color:#4A90D9;background:white}
+        .form-tambah button{padding:14px 22px;background:#4A90D9;color:white;border:none;border-radius:16px;font-size:16px;font-weight:600;cursor:pointer;white-space:nowrap}
+        .form-tambah button:active{transform:scale(0.95)}
+        .sub-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #eef2f7}
+        .stats{font-size:14px;color:#6b7a8f}
+        .stats span{font-weight:700;color:#1a2332}
+        .btn-hapus-selesai{background:none;border:none;color:#e74c3c;font-size:13px;font-weight:500;padding:4px 12px;border-radius:16px;cursor:pointer}
+        .btn-hapus-selesai:hover{background:#fde8e8}
+        .btn-hapus-selesai:disabled{opacity:0.3;cursor:not-allowed}
+        .daftar-task{list-style:none;padding:0;min-height:100px}
+        .daftar-task li{display:flex;align-items:center;padding:14px 16px;background:#fafbfc;border-radius:16px;margin-bottom:8px;gap:12px;border:1px solid transparent;animation:slideIn 0.25s ease-out}
+        .daftar-task li .checkbox-custom{width:24px;height:24px;min-width:24px;border-radius:50%;border:2px solid #c5cdd8;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;background:white}
+        .daftar-task li .checkbox-custom.selesai{background:#4A90D9;border-color:#4A90D9}
+        .daftar-task li .checkbox-custom.selesai::after{content:"✓";color:white;font-size:16px;font-weight:700}
+        .daftar-task li .task-text{flex:1;font-size:16px;color:#1a2332;word-break:break-word}
+        .daftar-task li .task-text.selesai{text-decoration:line-through;color:#8a9aaa}
+        .daftar-task li .btn-hapus{background:none;border:none;color:#bcc6d2;font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px;line-height:1}
+        .daftar-task li .btn-hapus:hover{color:#e74c3c;background:#fde8e8}
+        .empty-state{text-align:center;padding:30px 20px;color:#8a9aaa}
+        .empty-state .icon-empty{font-size:40px;margin-bottom:10px}
+        .empty-state p{font-size:14px}
+        .calendar-section{margin-top:24px;padding-top:20px;border-top:2px solid #eef2f7}
+        .calendar-section h3{font-size:16px;color:#1a2332;margin-bottom:12px;font-weight:600}
+        .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+        .calendar-grid .day-header{text-align:center;font-size:11px;font-weight:600;color:#8a9aaa;padding:6px 0}
+        .calendar-grid .day-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:#1a2332;border-radius:50%;cursor:pointer;background:transparent;border:none;width:100%;padding:0;position:relative}
+        .calendar-grid .day-cell:active{transform:scale(0.9)}
+        .calendar-grid .day-cell.other-month{color:#c5cdd8}
+        .calendar-grid .day-cell.today{background:#4A90D9;color:white;font-weight:700}
+        .calendar-grid .day-cell.selected{background:#dce3ed;font-weight:700}
+        .calendar-grid .day-cell.has-tasks::after{content:'';position:absolute;bottom:4px;width:5px;height:5px;background:#4A90D9;border-radius:50%}
+        .calendar-grid .day-cell.today.has-tasks::after{background:white}
+        .calendar-grid .day-cell.selected.has-tasks::after{background:#4A90D9}
+        .calendar-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+        .calendar-nav button{background:none;border:none;font-size:18px;padding:4px 12px;cursor:pointer;color:#4a5a72;border-radius:8px}
+        .calendar-nav button:active{background:#eef2f7}
+        .calendar-nav .month-label{font-weight:600;font-size:15px;color:#1a2332}
+        .install-banner{margin-top:20px;padding:12px 16px;background:#eef4ff;border-radius:16px;display:none;align-items:center;justify-content:space-between;border:1px solid #d0def0}
+        .install-banner.show{display:flex}
+        .install-banner p{font-size:14px;color:#1a2332;font-weight:500}
+        .install-banner button{background:#4A90D9;color:white;border:none;padding:8px 20px;border-radius:30px;font-weight:600;font-size:14px;cursor:pointer}
+        .install-banner button:active{transform:scale(0.95)}
+        @keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+        @media(max-width:400px){.app-container{padding:16px 12px 20px}.header h1{font-size:20px}.form-tambah input{font-size:14px;padding:12px 14px}.form-tambah button{font-size:14px;padding:12px 16px}.calendar-grid .day-cell{font-size:12px}}
     </style>
 </head>
 <body>
-
-<div class="app-container" role="main">
-    <!-- HEADER -->
+<div class="app-container">
     <div class="header">
         <h1>📅 To-Do List</h1>
         <button class="btn-today" id="btnToday">Hari Ini</button>
     </div>
-
-    <!-- NAVIGASI TANGGAL -->
     <div class="date-navigation">
         <button class="date-nav-btn" id="prevDateBtn">‹</button>
-        <div class="date-display" id="dateDisplay">
+        <div class="date-display">
             <span id="dateText"></span>
             <span class="day-name" id="dayNameText"></span>
             <span class="has-tasks-indicator empty" id="dateIndicator"></span>
         </div>
         <button class="date-nav-btn" id="nextDateBtn">›</button>
     </div>
-
-    <!-- FORM TAMBAH -->
     <form class="form-tambah" id="formTambah" autocomplete="off">
-        <input type="text" id="inputTask" placeholder="Tulis tugas baru..." required aria-label="Tugas baru">
+        <input type="text" id="inputTask" placeholder="Tulis tugas baru..." required>
         <button type="submit">Tambah</button>
     </form>
-
-    <!-- SUB HEADER -->
     <div class="sub-header">
-        <div class="stats">
-            <span id="totalTask">0</span> tugas · <span id="selesaiTask">0</span> selesai
-        </div>
+        <div class="stats"><span id="totalTask">0</span> tugas · <span id="selesaiTask">0</span> selesai</div>
         <button class="btn-hapus-selesai" id="hapusSelesaiBtn" disabled>Hapus selesai</button>
     </div>
-
-    <!-- DAFTAR TASK -->
-    <ul class="daftar-task" id="daftarTask" role="list">
-        <!-- Task akan di-render oleh JS -->
-    </ul>
-
-    <!-- EMPTY STATE -->
+    <ul class="daftar-task" id="daftarTask"></ul>
     <div class="empty-state" id="emptyState" style="display:none;">
         <div class="icon-empty">📝</div>
         <p>Belum ada tugas untuk tanggal ini.<br>Tambahkan tugasmu!</p>
     </div>
-
-    <!-- KALENDER -->
     <div class="calendar-section">
         <div class="calendar-nav">
             <button id="prevMonthBtn">‹</button>
             <span class="month-label" id="monthLabel">Januari 2026</span>
             <button id="nextMonthBtn">›</button>
         </div>
-        <div class="calendar-grid" id="calendarGrid">
-            <!-- Akan di-render oleh JS -->
-        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
     </div>
-
-    <!-- INSTALL BANNER -->
     <div class="install-banner" id="installBanner">
         <p>📲 Install aplikasi ini</p>
         <button id="installBtn">Install</button>
     </div>
 </div>
-
 <script>
-    // ============================================================
-    //  DATA & STATE
-    // ============================================================
-    let allTasks = {}; // { '2026-01-15': [ {id, text, done}, ... ] }
-    let selectedDate = new Date(); // tanggal yang sedang dilihat
-    let currentMonth = new Date(); // bulan yang ditampilkan di kalender
-    let deferredPrompt = null;
-
-    const STORAGE_KEY = 'todo_tasks_by_date';
-
-    // DOM refs
-    const formTambah = document.getElementById('formTambah');
-    const inputTask = document.getElementById('inputTask');
-    const daftarTask = document.getElementById('daftarTask');
-    const emptyState = document.getElementById('emptyState');
-    const totalTaskSpan = document.getElementById('totalTask');
-    const selesaiTaskSpan = document.getElementById('selesaiTask');
-    const hapusSelesaiBtn = document.getElementById('hapusSelesaiBtn');
-    const dateText = document.getElementById('dateText');
-    const dayNameText = document.getElementById('dayNameText');
-    const dateIndicator = document.getElementById('dateIndicator');
-    const prevDateBtn = document.getElementById('prevDateBtn');
-    const nextDateBtn = document.getElementById('nextDateBtn');
-    const btnToday = document.getElementById('btnToday');
-    const calendarGrid = document.getElementById('calendarGrid');
-    const monthLabel = document.getElementById('monthLabel');
-    const prevMonthBtn = document.getElementById('prevMonthBtn');
-    const nextMonthBtn = document.getElementById('nextMonthBtn');
-    const installBanner = document.getElementById('installBanner');
-    const installBtn = document.getElementById('installBtn');
-
-    // ============================================================
-    //  FUNGSI BANTU
-    // ============================================================
-    function formatDateKey(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
-
-    function formatDisplayDate(date) {
-        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-        return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
-    }
-
-    function getDayName(date) {
-        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-        return days[date.getDay()];
-    }
-
-    function isToday(date) {
-        const today = new Date();
-        return date.getFullYear() === today.getFullYear() &&
-               date.getMonth() === today.getMonth() &&
-               date.getDate() === today.getDate();
-    }
-
-    function getTasksForDate(dateKey) {
-        return allTasks[dateKey] || [];
-    }
-
-    function setTasksForDate(dateKey, tasks) {
-        if (tasks && tasks.length > 0) {
-            allTasks[dateKey] = tasks;
-        } else {
-            delete allTasks[dateKey];
-        }
-        simpanData();
-    }
-
-    // ============================================================
-    //  SIMPAN & MUAT DATA
-    // ============================================================
-    function simpanData() {
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(allTasks));
-        } catch (e) {
-            console.warn('Gagal simpan:', e);
-        }
-    }
-
-    function muatData() {
-        try {
-            const data = localStorage.getItem(STORAGE_KEY);
-            if (data) {
-                allTasks = JSON.parse(data);
-                return true;
-            }
-        } catch (e) {
-            console.warn('Gagal muat:', e);
-        }
-        return false;
-    }
-
-    // ============================================================
-    //  RENDER TASK UNTUK TANGGAL TERTENTU
-    // ============================================================
-    function renderTasks() {
-        const dateKey = formatDateKey(selectedDate);
-        const tasks = getTasksForDate(dateKey);
-        const sorted = [...tasks].sort((a, b) => {
-            if (a.done === b.done) return 0;
-            return a.done ? 1 : -1;
-        });
-
-        daftarTask.innerHTML = '';
-
-        if (sorted.length === 0) {
-            emptyState.style.display = 'block';
-        } else {
-            emptyState.style.display = 'none';
-        }
-
-        sorted.forEach((task, index) => {
-            const originalIndex = tasks.indexOf(task);
-
-            const li = document.createElement('li');
-            li.setAttribute('role', 'listitem');
-
-            const checkbox = document.createElement('span');
-            checkbox.className = `checkbox-custom ${task.done ? 'selesai' : ''}`;
-            checkbox.setAttribute('role', 'checkbox');
-            checkbox.setAttribute('aria-checked', task.done ? 'true' : 'false');
-            checkbox.setAttribute('tabindex', '0');
-            checkbox.addEventListener('click', () => toggleTask(originalIndex));
-            checkbox.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleTask(originalIndex);
-                }
-            });
-
-            const textSpan = document.createElement('span');
-            textSpan.className = `task-text ${task.done ? 'selesai' : ''}`;
-            textSpan.textContent = task.text;
-
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'btn-hapus';
-            deleteBtn.setAttribute('aria-label', 'Hapus tugas');
-            deleteBtn.textContent = '✕';
-            deleteBtn.addEventListener('click', () => hapusTask(originalIndex));
-
-            li.appendChild(checkbox);
-            li.appendChild(textSpan);
-            li.appendChild(deleteBtn);
-            daftarTask.appendChild(li);
-        });
-
-        // Update stats
-        const total = tasks.length;
-        const selesai = tasks.filter(t => t.done).length;
-        totalTaskSpan.textContent = total;
-        selesaiTaskSpan.textContent = selesai;
-        hapusSelesaiBtn.disabled = (selesai === 0);
-
-        // Update header
-        dateText.textContent = formatDisplayDate(selectedDate);
-        dayNameText.textContent = getDayName(selectedDate);
-
-        // Update indicator
-        if (tasks.length > 0) {
-            dateIndicator.className = 'has-tasks-indicator';
-        } else {
-            dateIndicator.className = 'has-tasks-indicator empty';
-        }
-
-        // Update kalender
-        renderCalendar();
-
-        simpanData();
-    }
-
-    // ============================================================
-    //  CRUD OPERASI
-    // ============================================================
-    function tambahTask(text) {
-        const trimmed = text.trim();
-        if (trimmed === '') return false;
-        const dateKey = formatDateKey(selectedDate);
-        const tasks = getTasksForDate(dateKey);
-        tasks.push({
-            id: Date.now() + Math.random().toString(36).substr(2, 4),
-            text: trimmed,
-            done: false,
-            createdAt: new Date().toISOString()
-        });
-        setTasksForDate(dateKey, tasks);
-        renderTasks();
-        return true;
-    }
-
-    function toggleTask(index) {
-        const dateKey = formatDateKey(selectedDate);
-        const tasks = getTasksForDate(dateKey);
-        if (index < 0 || index >= tasks.length) return;
-        tasks[index].done = !tasks[index].done;
-        setTasksForDate(dateKey, tasks);
-        renderTasks();
-    }
-
-    function hapusTask(index) {
-        const dateKey = formatDateKey(selectedDate);
-        const tasks = getTasksForDate(dateKey);
-        if (index < 0 || index >= tasks.length) return;
-        if (confirm(`Hapus tugas "${tasks[index].text}"?`)) {
-            tasks.splice(index, 1);
-            setTasksForDate(dateKey, tasks);
-            renderTasks();
-        }
-    }
-
-    function hapusSemuaSelesai() {
-        const dateKey = formatDateKey(selectedDate);
-        const tasks = getTasksForDate(dateKey);
-        const selesai = tasks.filter(t => t.done);
-        if (selesai.length === 0) return;
-        if (confirm(`Hapus ${selesai.length} tugas yang sudah selesai?`)) {
-            const remaining = tasks.filter(t => !t.done);
-            setTasksForDate(dateKey, remaining);
-            renderTasks();
-        }
-    }
-
-    // ============================================================
-    //  NAVIGASI TANGGAL
-    // ============================================================
-    function changeDate(days) {
-        const newDate = new Date(selectedDate);
-        newDate.setDate(newDate.getDate() + days);
-        selectedDate = newDate;
-        renderTasks();
-    }
-
-    function goToToday() {
-        selectedDate = new Date();
-        renderTasks();
-    }
-
-    // ============================================================
-    //  KALENDER
-    // ============================================================
-    function renderCalendar() {
-        const year = currentMonth.getFullYear();
-        const month = currentMonth.getMonth();
-
-        monthLabel.textContent = `${['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][month]} ${year}`;
-
-        const firstDay = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const daysInPrevMonth = new Date(year, month, 0).getDate();
-
-        const today = new Date();
-        const selectedKey = formatDateKey(selectedDate);
-
-        let html = '';
-        const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
-        dayNames.forEach(name => {
-            html += `<div class="day-header">${name}</div>`;
-        });
-
-        // Hari dari bulan sebelumnya
-        for (let i = firstDay - 1; i >= 0; i--) {
-            const day = daysInPrevMonth - i;
-            const dateObj = new Date(year, month - 1, day);
-            const dateKey = formatDateKey(dateObj);
-            const hasTasks = getTasksForDate(dateKey).length > 0;
-            html += `<button class="day-cell other-month${hasTasks ? ' has-tasks' : ''}" 
-                            data-date="${dateKey}">${day}</button>`;
-        }
-
-        // Hari di bulan ini
-        for (let day = 1; day <= daysInMonth; day++) {
-            const dateObj = new Date(year, month, day);
-            const dateKey = formatDateKey(dateObj);
-            const isTodayDate = isToday(dateObj);
-            const isSelected = dateKey === selectedKey;
-            const hasTasks = getTasksForDate(dateKey).length > 0;
-
-            let classes = '';
-            if (isTodayDate) classes += ' today';
-            if (isSelected) classes += ' selected';
-            if (hasTasks) classes += ' has-tasks';
-
-            html += `<button class="day-cell${classes}" data-date="${dateKey}">${day}</button>`;
-        }
-
-        // Hari dari bulan berikutnya (untuk mengisi grid)
-        const totalCells = firstDay + daysInMonth;
-        const remainingCells = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
-        for (let day = 1; day <= remainingCells; day++) {
-            const dateObj = new Date(year, month + 1, day);
-            const dateKey = formatDateKey(dateObj);
-            const hasTasks = getTasksForDate(dateKey).length > 0;
-            html += `<button class="day-cell other-month${hasTasks ? ' has-tasks' : ''}" 
-                            data-date="${dateKey}">${day}</button>`;
-        }
-
-        calendarGrid.innerHTML = html;
-
-        // Event listener untuk klik tanggal
-        document.querySelectorAll('.day-cell').forEach(cell => {
-            cell.addEventListener('click', function() {
-                const dateKey = this.dataset.date;
-                const parts = dateKey.split('-');
-                const newDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-                selectedDate = newDate;
-                renderTasks();
-            });
-        });
-    }
-
-    function changeMonth(delta) {
-        currentMonth.setMonth(currentMonth.getMonth() + delta);
-        renderCalendar();
-    }
-
-    // ============================================================
-    //  EVENT LISTENERS
-    // ============================================================
-    formTambah.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const text = inputTask.value;
-        const berhasil = tambahTask(text);
-        if (berhasil) {
-            inputTask.value = '';
-            inputTask.focus();
-        }
-    });
-
-    hapusSelesaiBtn.addEventListener('click', hapusSemuaSelesai);
-
-    prevDateBtn.addEventListener('click', () => changeDate(-1));
-    nextDateBtn.addEventListener('click', () => changeDate(1));
-    btnToday.addEventListener('click', goToToday);
-
-    prevMonthBtn.addEventListener('click', () => changeMonth(-1));
-    nextMonthBtn.addEventListener('click', () => changeMonth(1));
-
-    // ============================================================
-    //  PWA INSTALL
-    // ============================================================
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        installBanner.classList.add('show');
-    });
-
-    installBtn.addEventListener('click', async () => {
-        if (deferredPrompt) {
-            const result = await deferredPrompt.prompt();
-            deferredPrompt = null;
-            installBanner.classList.remove('show');
-        }
-    });
-
-    window.addEventListener('appinstalled', () => {
-        installBanner.classList.remove('show');
-        deferredPrompt = null;
-    });
-
-    // ============================================================
-    //  INIT
-    // ============================================================
-    // Muat data
-    const loaded = muatData();
-    if (!loaded || Object.keys(allTasks).length === 0) {
-        // Data default untuk hari ini
-        const todayKey = formatDateKey(new Date());
-        allTasks = {};
-        allTasks[todayKey] = [
-            { id: '1', text: 'Coba aplikasi ini', done: false, createdAt: new Date().toISOString() },
-            { id: '2', text: 'Tambahkan tugas untuk hari ini', done: false, createdAt: new Date().toISOString() },
-        ];
-        // Tambah contoh untuk besok
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        const tomorrowKey = formatDateKey(tomorrow);
-        allTasks[tomorrowKey] = [
-            { id: '3', text: 'Contoh tugas untuk besok', done: false, createdAt: new Date().toISOString() },
-        ];
-        simpanData();
-    }
-
-    selectedDate = new Date();
-    currentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
-    renderTasks();
-
-    inputTask.focus();
-
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-            .then(() => console.log('SW registered'))
-            .catch(err => console.log('SW registration failed:', err));
-    }
-
-    console.log('✅ To-Do List Harian dengan Kalender siap!');
+let allTasks={},selectedDate=new Date,currentMonth=new Date,deferredPrompt=null;const STORAGE_KEY='todo_tasks_by_date',formTambah=document.getElementById('formTambah'),inputTask=document.getElementById('inputTask'),daftarTask=document.getElementById('daftarTask'),emptyState=document.getElementById('emptyState'),totalTaskSpan=document.getElementById('totalTask'),selesaiTaskSpan=document.getElementById('selesaiTask'),hapusSelesaiBtn=document.getElementById('hapusSelesaiBtn'),dateText=document.getElementById('dateText'),dayNameText=document.getElementById('dayNameText'),dateIndicator=document.getElementById('dateIndicator'),prevDateBtn=document.getElementById('prevDateBtn'),nextDateBtn=document.getElementById('nextDateBtn'),btnToday=document.getElementById('btnToday'),calendarGrid=document.getElementById('calendarGrid'),monthLabel=document.getElementById('monthLabel'),prevMonthBtn=document.getElementById('prevMonthBtn'),nextMonthBtn=document.getElementById('nextMonthBtn'),installBanner=document.getElementById('installBanner'),installBtn=document.getElementById('installBtn');
+function formatDateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function formatDisplayDate(d){const days=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'],months=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];return days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear()}
+function getDayName(d){return['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][d.getDay()]}
+function isToday(d){const t=new Date;return d.getFullYear()===t.getFullYear()&&d.getMonth()===t.getMonth()&&d.getDate()===t.getDate()}
+function getTasksForDate(k){return allTasks[k]||[]}
+function setTasksForDate(k,t){t&&t.length>0?allTasks[k]=t:delete allTasks[k];simpanData()}
+function simpanData(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(allTasks))}catch(e){}}
+function muatData(){try{const d=localStorage.getItem(STORAGE_KEY);if(d){allTasks=JSON.parse(d);return true}}catch(e){}return false}
+function renderTasks(){const dateKey=formatDateKey(selectedDate),tasks=getTasksForDate(dateKey),sorted=[...tasks].sort((a,b)=>{if(a.done===b.done)return 0;return a.done?1:-1});daftarTask.innerHTML='';if(sorted.length===0){emptyState.style.display='block'}else{emptyState.style.display='none'}sorted.forEach((task,index)=>{const originalIndex=tasks.indexOf(task),li=document.createElement('li'),checkbox=document.createElement('span');checkbox.className='checkbox-custom '+(task.done?'selesai':'');checkbox.setAttribute('role','checkbox');checkbox.setAttribute('aria-checked',task.done?'true':'false');checkbox.setAttribute('tabindex','0');checkbox.addEventListener('click',()=>toggleTask(originalIndex));checkbox.addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleTask(originalIndex)}});const textSpan=document.createElement('span');textSpan.className='task-text '+(task.done?'selesai':'');textSpan.textContent=task.text;const deleteBtn=document.createElement('button');deleteBtn.className='btn-hapus';deleteBtn.setAttribute('aria-label','Hapus tugas');deleteBtn.textContent='✕';deleteBtn.addEventListener('click',()=>hapusTask(originalIndex));li.appendChild(checkbox);li.appendChild(textSpan);li.appendChild(deleteBtn);daftarTask.appendChild(li)});const total=tasks.length,selesai=tasks.filter(t=>t.done).length;totalTaskSpan.textContent=total;selesaiTaskSpan.textContent=selesai;hapusSelesaiBtn.disabled=(selesai===0);dateText.textContent=formatDisplayDate(selectedDate);dayNameText.textContent=getDayName(selectedDate);if(tasks.length>0){dateIndicator.className='has-tasks-indicator'}else{dateIndicator.className='has-tasks-indicator empty'}renderCalendar();simpanData()}
+function tambahTask(text){const trimmed=text.trim();if(trimmed==='')return false;const dateKey=formatDateKey(selectedDate),tasks=getTasksForDate(dateKey);tasks.push({id:Date.now()+Math.random().toString(36).substr(2,4),text:trimmed,done:false,createdAt:new Date().toISOString()});setTasksForDate(dateKey,tasks);renderTasks();return true}
+function toggleTask(index){const dateKey=formatDateKey(selectedDate),tasks=getTasksForDate(dateKey);if(index<0||index>=tasks.length)return;tasks[index].done=!tasks[index].done;setTasksForDate(dateKey,tasks);renderTasks()}
+function hapusTask(index){const dateKey=formatDateKey(selectedDate),tasks=getTasksForDate(dateKey);if(index<0||index>=tasks.length)return;if(confirm('Hapus tugas "'+tasks[index].text+'"?')){tasks.splice(index,1);setTasksForDate(dateKey,tasks);renderTasks()}}
+function hapusSemuaSelesai(){const dateKey=formatDateKey(selectedDate),tasks=getTasksForDate(dateKey),selesai=tasks.filter(t=>t.done);if(selesai.length===0)return;if(confirm('Hapus '+selesai.length+' tugas yang sudah selesai?')){const remaining=tasks.filter(t=>!t.done);setTasksForDate(dateKey,remaining);renderTasks()}}
+function changeDate(d){const n=new Date(selectedDate);n.setDate(n.getDate()+d);selectedDate=n;renderTasks()}
+function goToToday(){selectedDate=new Date;renderTasks()}
+function renderCalendar(){const year=currentMonth.getFullYear(),month=currentMonth.getMonth();monthLabel.textContent=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][month]+' '+year;const firstDay=new Date(year,month,1).getDay(),daysInMonth=new Date(year,month+1,0).getDate(),daysInPrevMonth=new Date(year,month,0).getDate(),today=new Date,selectedKey=formatDateKey(selectedDate);let html='';['Min','Sen','Sel','Rab','Kam','Jum','Sab'].forEach(n=>{html+='<div class="day-header">'+n+'</div>'});for(let i=firstDay-1;i>=0;i--){const day=daysInPrevMonth-i,dateObj=new Date(year,month-1,day),dateKey=formatDateKey(dateObj),hasTasks=getTasksForDate(dateKey).length>0;html+='<button class="day-cell other-month'+(hasTasks?' has-tasks':'')+'" data-date="'+dateKey+'">'+day+'</button>'}for(let day=1;day<=daysInMonth;day++){const dateObj=new Date(year,month,day),dateKey=formatDateKey(dateObj),isTodayDate=isToday(dateObj),isSelected=dateKey===selectedKey,hasTasks=getTasksForDate(dateKey).length>0;let classes='';if(isTodayDate)classes+=' today';if(isSelected)classes+=' selected';if(hasTasks)classes+=' has-tasks';html+='<button class="day-cell'+classes+'" data-date="'+dateKey+'">'+day+'</button>'}const totalCells=firstDay+daysInMonth,remainingCells=totalCells%7===0?0:7-totalCells%7;for(let day=1;day<=remainingCells;day++){const dateObj=new Date(year,month+1,day),dateKey=formatDateKey(dateObj),hasTasks=getTasksForDate(dateKey).length>0;html+='<button class="day-cell other-month'+(hasTasks?' has-tasks':'')+'" data-date="'+dateKey+'">'+day+'</button>'}calendarGrid.innerHTML=html;document.querySelectorAll('.day-cell').forEach(cell=>{cell.addEventListener('click',function(){const dateKey=this.dataset.date,parts=dateKey.split('-'),newDate=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));selectedDate=newDate;renderTasks()})})}
+function changeMonth(d){currentMonth.setMonth(currentMonth.getMonth()+d);renderCalendar()}
+formTambah.addEventListener('submit',function(e){e.preventDefault();const text=inputTask.value;if(tambahTask(text)){inputTask.value='';inputTask.focus()}});
+hapusSelesaiBtn.addEventListener('click',hapusSemuaSelesai);
+prevDateBtn.addEventListener('click',()=>changeDate(-1));
+nextDateBtn.addEventListener('click',()=>changeDate(1));
+btnToday.addEventListener('click',goToToday);
+prevMonthBtn.addEventListener('click',()=>changeMonth(-1));
+nextMonthBtn.addEventListener('click',()=>changeMonth(1));
+window.addEventListener('beforeinstallprompt',(e)=>{e.preventDefault();deferredPrompt=e;installBanner.classList.add('show')});
+installBtn.addEventListener('click',async()=>{if(deferredPrompt){await deferredPrompt.prompt();deferredPrompt=null;installBanner.classList.remove('show')}});
+window.addEventListener('appinstalled',()=>{installBanner.classList.remove('show');deferredPrompt=null});
+const loaded=muatData();if(!loaded||Object.keys(allTasks).length===0){const todayKey=formatDateKey(new Date());allTasks={};allTasks[todayKey]=[{id:'1',text:'Coba aplikasi ini',done:false,createdAt:new Date().toISOString()},{id:'2',text:'Tambahkan tugas untuk hari ini',done:false,createdAt:new Date().toISOString()}];const tomorrow=new Date;tomorrow.setDate(tomorrow.getDate()+1);const tomorrowKey=formatDateKey(tomorrow);allTasks[tomorrowKey]=[{id:'3',text:'Contoh tugas untuk besok',done:false,createdAt:new Date().toISOString()}];simpanData()}selectedDate=new Date;currentMonth=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),1);renderTasks();inputTask.focus();if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}
 </script>
-
 </body>
 </html>
